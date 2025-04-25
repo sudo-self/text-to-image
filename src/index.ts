@@ -1,6 +1,18 @@
 var index_default = {
   async fetch(request: Request, env: any) {
-    let prompt = "The Matrix"; // default fallback
+
+    if (request.method === "OPTIONS") {
+      return new Response(null, {
+        status: 204,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type"
+        }
+      });
+    }
+
+    let prompt = "The Matrix"; 
 
     if (request.method === "GET") {
       const url = new URL(request.url);
@@ -11,11 +23,16 @@ var index_default = {
         const body = await request.json();
         if (body.prompt) prompt = body.prompt;
       } catch (e) {
-        return new Response("Invalid JSON", { status: 400 });
+        return new Response("Invalid JSON", {
+          status: 400,
+          headers: {
+            "Access-Control-Allow-Origin": "*"
+          }
+        });
       }
     }
 
-    // Run the AI model
+    // AI 
     try {
       const response = await env.AI.run(
         "@cf/stabilityai/stable-diffusion-xl-base-1.0",
@@ -23,10 +40,18 @@ var index_default = {
       );
 
       return new Response(response, {
-        headers: { "content-type": "image/png" }
+        headers: {
+          "Content-Type": "image/png",
+          "Access-Control-Allow-Origin": "*"
+        }
       });
     } catch (err) {
-      return new Response("AI generation error", { status: 500 });
+      return new Response("AI generation error", {
+        status: 500,
+        headers: {
+          "Access-Control-Allow-Origin": "*"
+        }
+      });
     }
   }
 };
@@ -34,5 +59,6 @@ var index_default = {
 export {
   index_default as default
 };
+
 
 
