@@ -1,6 +1,6 @@
 var index_default = {
   async fetch(request: Request, env: any) {
-    let prompt = "cyberpunk cat";
+    let prompt = "The Matrix"; // default fallback
 
     if (request.method === "GET") {
       const url = new URL(request.url);
@@ -15,22 +15,24 @@ var index_default = {
       }
     }
 
-    const inputs = { prompt };
+    // Run the AI model
+    try {
+      const response = await env.AI.run(
+        "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+        { prompt }
+      );
 
-    const response = await env.AI.run(
-      "@cf/stabilityai/stable-diffusion-xl-base-1.0",
-      inputs
-    );
-
-    return new Response(response, {
-      headers: {
-        "content-type": "image/png"
-      }
-    });
+      return new Response(response, {
+        headers: { "content-type": "image/png" }
+      });
+    } catch (err) {
+      return new Response("AI generation error", { status: 500 });
+    }
   }
 };
 
 export {
   index_default as default
 };
+
 
