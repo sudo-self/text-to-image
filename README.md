@@ -1,8 +1,9 @@
-<center>
+ <center>
   <a href="https://deploy.workers.cloudflare.com/?url=https://github.com/sudo-self/text-to-image-worker">
     <img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare Workers" />
   </a>
 </center>
+    <hr />
 <br />
                 
   ```
